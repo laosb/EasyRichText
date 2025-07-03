@@ -1,3 +1,5 @@
+xcode-select -s /Applications/Xcode_16.2.0.app
+
 xcodebuild docbuild -scheme EasyRichText-Package -destination 'platform=iOS Simulator,name=iPhone 15' -parallelizeTargets -derivedDataPath docsData
 echo "Copying DocC archives to docArchives..."
 mkdir -p docArchives
