@@ -1,6 +1,6 @@
 //
 //  ERTTextEditor_AppKit.swift
-//  RichTextTest
+//  EasyRichText
 //
 //  Created by Shibo Lyu on 2024/2/2.
 //

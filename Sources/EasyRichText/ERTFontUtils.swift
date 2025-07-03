@@ -1,6 +1,6 @@
 //
 //  ERTFontUtils.swift
-//  RichTextTest
+//  EasyRichText
 //
 //  Created by Shibo Lyu on 2024/2/1.
 //
