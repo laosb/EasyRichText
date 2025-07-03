@@ -7,25 +7,28 @@
 
 import Foundation
 
-public protocol ERTSingleKeyFeature: ERTFeature {
-    associatedtype Key: AttributedStringKey
-    associatedtype Value: Codable, Hashable, Equatable
+public protocol ERTSingleKeyFeature: ERTFeature where Key.Value: Sendable {
+  associatedtype Key: AttributedStringKey, Sendable
+  associatedtype Value: Codable, Hashable, Equatable, Sendable
 
-    init(attributeKeyValue: Key.Value?)
-    init(value: Value?)
+  init(attributeKeyValue: Key.Value?)
+  init(value: Value?)
 
-    func transformAttributedKeyValue(_ attributedKeyValue: Key.Value?) -> Key.Value?
+  func transformAttributedKeyValue(_ attributedKeyValue: Key.Value?) -> Key
+    .Value?
 }
 
-public extension ERTSingleKeyFeature {
-    init?(attributeContainer: AttributeContainer) {
-        self.init(attributeKeyValue: attributeContainer[Key.self])
-    }
+extension ERTSingleKeyFeature {
+  public init?(attributeContainer: AttributeContainer) {
+    self.init(attributeKeyValue: attributeContainer[Key.self])
+  }
 
-    func setupAttributes(on attributedString: AttributedString) -> AttributedString {
-        var attributedString = attributedString
-        let keyValue = attributedString[Key.self]
-        attributedString[Key.self] = transformAttributedKeyValue(keyValue)
-        return attributedString
-    }
+  public func setupAttributes(on attributedString: AttributedString)
+    -> AttributedString
+  {
+    var attributedString = attributedString
+    let keyValue = attributedString[Key.self]
+    attributedString[Key.self] = transformAttributedKeyValue(keyValue)
+    return attributedString
+  }
 }

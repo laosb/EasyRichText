@@ -6,22 +6,23 @@
 //
 
 import Foundation
+
 #if canImport(AppKit)
-import AppKit
+  import AppKit
 #elseif canImport(UIKit)
-import UIKit
+  import UIKit
 #endif
 
 public struct ERTBoldFeature: ERTSymbolicTraitFeature {
-#if canImport(AppKit)
-    public static var traits: NSFontDescriptor.SymbolicTraits = .bold
-#elseif canImport(UIKit)
-    public static var traits: UIFontDescriptor.SymbolicTraits = .traitBold
-#endif
+  #if canImport(AppKit)
+    public static let traits: NSFontDescriptor.SymbolicTraits = .bold
+  #elseif canImport(UIKit)
+    public static let traits: UIFontDescriptor.SymbolicTraits = .traitBold
+  #endif
 
-    public var isOn: Bool
+  public var isOn: Bool
 
-    public init(value: Bool?) {
-        isOn = value ?? false
-    }
+  public init(value: Bool?) {
+    isOn = value ?? false
+  }
 }

@@ -6,61 +6,69 @@
 //
 
 import SwiftUI
+
 #if canImport(AppKit)
-import AppKit
+  import AppKit
 #elseif canImport(UIKit)
-import UIKit
+  import UIKit
 #endif
 
-public protocol ERTRichText: Codable, Hashable {
-    associatedtype Segment: ERTSegment
+public protocol ERTRichText: Codable, Hashable, Sendable {
+  associatedtype Segment: ERTSegment
 
-    var segments: [Segment] { get set }
+  var segments: [Segment] { get set }
 
-    init()
-    init(attributedString: AttributedString)
+  init()
+  init(attributedString: AttributedString)
 
-    func attributedString(defaultFont: CTFont) -> AttributedString
+  func attributedString(defaultFont: CTFont) -> AttributedString
 }
 
-public extension ERTRichText {
-    init(attributedString: AttributedString) {
-        self.init()
-        self.segments = attributedString.runs.map { run in
-            let text = String(attributedString[run.range].characters)
-            return .init(text: text, attributeContainer: run.attributes)
-        }
+extension ERTRichText {
+  public init(attributedString: AttributedString) {
+    self.init()
+    self.segments = attributedString.runs.map { run in
+      let text = String(attributedString[run.range].characters)
+      return .init(text: text, attributeContainer: run.attributes)
     }
+  }
 
-    init(nsAttributedString: NSAttributedString) {
-        let attributedString = ERTAttributedStringBridge.default.attributedString(for: nsAttributedString)
+  public init(nsAttributedString: NSAttributedString) {
+    let attributedString = ERTAttributedStringBridge.default.attributedString(
+      for: nsAttributedString
+    )
 
-        self.init(attributedString: attributedString)
-    }
+    self.init(attributedString: attributedString)
+  }
 
-    init(string: String) {
-        self.init()
-        self.segments = [.init(text: string)]
-    }
+  public init(string: String) {
+    self.init()
+    self.segments = [.init(text: string)]
+  }
 
-    func attributedString(defaultFont: CTFont) -> AttributedString {
-        segments.map { $0.attributedString(defaultFont: defaultFont) }.reduce(AttributedString(), +)
-    }
-    func attributedString(defaultFont: Font) -> AttributedString {
-        let ctFont = ERTFontUtils.default.ctFont(from: defaultFont)
-        #if canImport(AppKit)
-        let fallbackFont = NSFont.preferredFont(forTextStyle: .body)
-        #elseif canImport(UIKit)
-        let fallbackFont = UIFont.preferredFont(forTextStyle: .body)
-        #endif
-        return attributedString(defaultFont: ctFont ?? fallbackFont)
-    }
+  public func attributedString(defaultFont: CTFont) -> AttributedString {
+    segments.map { $0.attributedString(defaultFont: defaultFont) }.reduce(
+      AttributedString(),
+      +
+    )
+  }
+  public func attributedString(defaultFont: Font) -> AttributedString {
+    let ctFont = ERTFontUtils.default.ctFont(from: defaultFont)
+    #if canImport(AppKit)
+      let fallbackFont = NSFont.preferredFont(forTextStyle: .body)
+    #elseif canImport(UIKit)
+      let fallbackFont = UIFont.preferredFont(forTextStyle: .body)
+    #endif
+    return attributedString(defaultFont: ctFont ?? fallbackFont)
+  }
 
-    func nsAttributedString(defaultFont: CTFont) -> NSAttributedString {
-        ERTAttributedStringBridge.default.nsAttributedString(for: attributedString(defaultFont: defaultFont))
-    }
+  public func nsAttributedString(defaultFont: CTFont) -> NSAttributedString {
+    ERTAttributedStringBridge.default.nsAttributedString(
+      for: attributedString(defaultFont: defaultFont)
+    )
+  }
 
-    var plainText: String {
-        segments.map { $0.text }.joined()
-    }
+  public var plainText: String {
+    segments.map { $0.text }.joined()
+  }
 }
