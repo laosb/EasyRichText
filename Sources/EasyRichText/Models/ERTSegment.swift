@@ -5,30 +5,30 @@
 //  Created by Shibo Lyu on 2024/1/29.
 //
 
-import Foundation
 import CoreText
+import Foundation
 
-public protocol ERTSegment: Codable, Hashable {
-    var text: String { get set }
+public protocol ERTSegment: Codable, Hashable, Sendable {
+  var text: String { get set }
 
-    init(text: String, attributeContainer: AttributeContainer)
-    func attributedString(defaultFont: CTFont) -> AttributedString
+  init(text: String, attributeContainer: AttributeContainer)
+  func attributedString(defaultFont: CTFont) -> AttributedString
 }
 
-public extension ERTSegment {
-    init(text: String) {
-        self.init(text: text, attributeContainer: .init())
-    }
+extension ERTSegment {
+  public init(text: String) {
+    self.init(text: text, attributeContainer: .init())
+  }
 }
 
 public protocol ERTForegroundColorSegment: Codable, Hashable {
-    associatedtype ForegroundColor: ERTColor
+  associatedtype ForegroundColor: ERTColor
 
-    var color: ERTForegroundColorFeature<ForegroundColor>? { get set }
+  var color: ERTForegroundColorFeature<ForegroundColor>? { get set }
 }
 
 public protocol ERTBackgroundColorSegment: Codable, Hashable {
-    associatedtype BackgroundColor: ERTColor
+  associatedtype BackgroundColor: ERTColor
 
-    var backgroundColor: ERTBackgroundColorFeature<BackgroundColor>? { get set }
+  var backgroundColor: ERTBackgroundColorFeature<BackgroundColor>? { get set }
 }

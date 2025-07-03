@@ -9,6 +9,7 @@ import Combine
 import CoreText
 @_spi(Internal) import EasyRichText
 import Foundation
+import Observation
 
 #if canImport(AppKit)
   import AppKit
@@ -19,11 +20,11 @@ import Foundation
   import SwiftUI
 #endif
 
-@MainActor
-public class ERTRichTextEditContext<RichText: ERTRichText>: ObservableObject {
-  @Published public private(set) var richText: RichText
-  @Published public private(set) var selectedRange: NSRange?
-  var nsAttributedString: NSMutableAttributedString
+@Observable @MainActor
+public class ERTRichTextEditContext<RichText: ERTRichText> {
+  public private(set) var richText: RichText
+  public private(set) var selectedRange: NSRange?
+  @ObservationIgnored var nsAttributedString: NSMutableAttributedString
   public var defaultFont: CTFont {
     didSet {
       nsAttributedString = Self.nsAttributedString(
@@ -34,8 +35,8 @@ public class ERTRichTextEditContext<RichText: ERTRichText>: ObservableObject {
       )
     }
   }
-  var onTextUpdated: ((NSAttributedString) -> Void)?
-  public var onEndEditing: (() -> Void)?
+  @ObservationIgnored var onTextUpdated: ((NSAttributedString) -> Void)?
+  @ObservationIgnored public var onEndEditing: (() -> Void)?
 
   let italicSynthesizer: ERTItalicSynthesizer?
   let attributedStringBridge: ERTAttributedStringBridge
