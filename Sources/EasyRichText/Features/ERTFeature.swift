@@ -7,7 +7,8 @@
 
 import Foundation
 
-public protocol ERTFeature: Codable, Hashable, Equatable {
-    init?(attributeContainer: AttributeContainer)
-    func setupAttributes(on attributedString: AttributedString) -> AttributedString
+public protocol ERTFeature: Codable, Hashable, Equatable, Sendable {
+  init?(attributeContainer: AttributeContainer)
+  func setupAttributes(on attributedString: AttributedString)
+    -> AttributedString
 }
