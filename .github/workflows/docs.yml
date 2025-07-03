@@ -25,10 +25,9 @@ jobs:
       - name: Generate Docs
         run: ./Scripts/Build_Doc.sh
       - name: Publish to Cloudflare Pages
-        uses: cloudflare/pages-action@1
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: 692bd58c8585abc099232c16459f7af4
-          projectName: easyrichtext
-          directory: ./public
+          command: pages deploy ./public --project-name=easyrichtext
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
